@@ -1,0 +1,54 @@
+.app-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2rem 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.icon {
+  font-size: 3rem;
+  transform: rotate(45deg);
+  display: inline-block;
+  color: var(--primary);
+  filter: drop-shadow(0 0 8px rgba(99,102,241,0.5));
+}
+
+h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+  letter-spacing: -2px;
+  margin: 0;
+  background: linear-gradient(90deg, #fff, #94a3b8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.highlight {
+  color: var(--primary);
+  background: none;
+  -webkit-text-fill-color: var(--primary);
+}
+
+.tagline {
+  color: var(--text-muted);
+  font-size: 1.25rem;
+  font-weight: 300;
+  letter-spacing: 0.5px;
+}
+
+.app-footer {
+  margin-top: 5rem;
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-color);
+  font-size: 0.875rem;
+}

@@ -1,0 +1,36 @@
+<div class="watchers-container">
+  <h2>Active Trackers</h2>
+  <div class="empty-state" *ngIf="watchers.length === 0">
+    <div class="icon-placeholder">🛫</div>
+    <p>You aren't tracking any flights right now.</p>
+    <p class="text-sm">Add a watcher using the form above to start monitoring prices.</p>
+  </div>
+
+  <div class="watcher-grid" *ngIf="watchers.length > 0">
+    <div class="glass-panel watcher-card" *ngFor="let watcher of watchers">
+      <div class="card-header">
+        <div class="route">
+          <span class="city">{{ watcher.fly_from }}</span>
+          <span class="arrow">✈️</span>
+          <span class="city">{{ watcher.fly_to }}</span>
+        </div>
+        <button class="btn btn-danger btn-sm" (click)="onDelete(watcher.id)">Stop</button>
+      </div>
+
+      <div class="card-body">
+        <div class="info-row">
+          <span class="label">Dates:</span>
+          <span class="value">{{ watcher.date_from }} - {{ watcher.date_to }}</span>
+        </div>
+        <div class="info-row highlight-row">
+          <span class="label">Target Alert:</span>
+          <span class="value price">{{ watcher.targetPrice | number }} {{ watcher.curr }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Notify:</span>
+          <span class="value">{{ watcher.emailUser }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

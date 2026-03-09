@@ -1,0 +1,17 @@
+<main class="container">
+  <header class="app-header">
+    <div class="logo">
+      <span class="icon">✈️</span>
+      <h1>Flight<span class="highlight">Tracker</span></h1>
+    </div>
+    <p class="tagline">Never miss a price drop again. Set your target, and we'll alert you 24/7.</p>
+  </header>
+
+  <app-watcher-form (watcherAdded)="loadWatchers()"></app-watcher-form>
+  
+  <app-watcher-list [watchers]="watchers" (delete)="onDeleteWatcher($event)"></app-watcher-list>
+  
+  <footer class="app-footer">
+    <p>Powered by Kiwi API & Angular 17</p>
+  </footer>
+</main>

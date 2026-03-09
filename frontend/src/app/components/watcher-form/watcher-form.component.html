@@ -1,0 +1,42 @@
+<div class="glass-panel form-container">
+  <h2>Add New Flight Alert</h2>
+  <p class="subtitle">Get notified when prices drop below your target.</p>
+  
+  <form (ngSubmit)="onSubmit()" #watcherForm="ngForm">
+    <div class="form-grid">
+      <div class="input-group">
+        <label for="fly_from">From (IATA Code)</label>
+        <input type="text" id="fly_from" name="fly_from" [(ngModel)]="watcher.fly_from" placeholder="e.g., TPE" required maxlength="3">
+      </div>
+      
+      <div class="input-group">
+        <label for="fly_to">To (IATA Code)</label>
+        <input type="text" id="fly_to" name="fly_to" [(ngModel)]="watcher.fly_to" placeholder="e.g., NRT" required maxlength="3">
+      </div>
+
+      <div class="input-group">
+        <label for="date_from">Date From (dd/mm/yyyy)</label>
+        <input type="text" id="date_from" name="date_from" [(ngModel)]="watcher.date_from" placeholder="01/12/2026" required>
+      </div>
+
+      <div class="input-group">
+        <label for="date_to">Date To (dd/mm/yyyy)</label>
+        <input type="text" id="date_to" name="date_to" [(ngModel)]="watcher.date_to" placeholder="31/12/2026" required>
+      </div>
+
+      <div class="input-group">
+        <label for="targetPrice">Target Price (TWD)</label>
+        <input type="number" id="targetPrice" name="targetPrice" [(ngModel)]="watcher.targetPrice" required>
+      </div>
+
+      <div class="input-group">
+        <label for="emailUser">Notification Email</label>
+        <input type="email" id="emailUser" name="emailUser" [(ngModel)]="watcher.emailUser" placeholder="you@example.com" required>
+      </div>
+    </div>
+    
+    <button type="submit" class="btn submit-btn" [disabled]="!watcherForm.form.valid || isSubmitting">
+      {{ isSubmitting ? 'Adding...' : 'Start Tracking' }}
+    </button>
+  </form>
+</div>
