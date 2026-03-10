@@ -14,28 +14,48 @@
   <!-- Deals Found Section -->
   <section class="results-container" *ngIf="flightResults.length > 0">
     <div class="results-header">
-      <h2>🔥 Latest Deals Found</h2>
-      <p>Results matching your target price criteria across all trackers.</p>
-    </div>
-    <div class="results-grid">
-      <div class="glass-panel result-card" *ngFor="let res of flightResults">
-        <div class="result-route">
-          <span class="city">{{ res.origin }}</span>
-          <span class="arrow">→</span>
-          <span class="city">{{ res.destination }}</span>
+      <div class="header-main">
+        <h2>🔥 Latest Deals Found</h2>
+        <div class="sort-controls">
+          <span>Sort by:</span>
+          <button class="btn btn-outline btn-xs" (click)="sortResults('price')">Price</button>
+          <button class="btn btn-outline btn-xs" (click)="sortResults('date')">Date</button>
+          <button class="btn btn-outline btn-xs" (click)="sortResults('airline')">Airline</button>
+          <button class="btn btn-outline btn-xs" (click)="sortResults('route')">Route</button>
         </div>
-        <div class="result-details">
-          <div class="detail">
-            <span class="label">Date:</span>
-            <span class="value">{{ res.date }}</span>
-          </div>
-          <div class="detail">
-            <span class="label">Price:</span>
-            <span class="value price">{{ res.price | number }} TWD</span>
-          </div>
-        </div>
-        <a [href]="res.deepLink" target="_blank" class="btn btn-primary btn-block">Book Now</a>
       </div>
+      <p>Flight deals found within your specified time window and budget.</p>
+    </div>
+
+    <div class="glass-panel results-table-wrapper">
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>Route</th>
+            <th>Airline</th>
+            <th>Departure</th>
+            <th>Price</th>
+            <th class="text-right">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let res of flightResults">
+            <td>
+              <div class="table-route">
+                <span class="city">{{ res.origin }}</span>
+                <span class="arrow">→</span>
+                <span class="city">{{ res.destination }}</span>
+              </div>
+            </td>
+            <td>{{ res.airline }}</td>
+            <td>{{ res.date }}</td>
+            <td class="price">{{ res.price | number }} TWD</td>
+            <td class="text-right">
+              <a [href]="res.deepLink" target="_blank" class="btn btn-primary btn-sm">Book</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </section>
 

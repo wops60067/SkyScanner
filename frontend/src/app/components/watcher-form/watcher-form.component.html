@@ -15,13 +15,13 @@
       </div>
 
       <div class="input-group">
-        <label for="date_from">Date From (dd/mm/yyyy)</label>
-        <input type="text" id="date_from" name="date_from" [(ngModel)]="watcher.date_from" placeholder="01/12/2026" required>
+        <label for="date_from">Window Start</label>
+        <input type="datetime-local" id="date_from" name="date_from" [(ngModel)]="watcher.date_from" required>
       </div>
 
       <div class="input-group">
-        <label for="date_to">Date To (dd/mm/yyyy)</label>
-        <input type="text" id="date_to" name="date_to" [(ngModel)]="watcher.date_to" placeholder="31/12/2026" required>
+        <label for="date_to">Window End</label>
+        <input type="datetime-local" id="date_to" name="date_to" [(ngModel)]="watcher.date_to" required>
       </div>
 
       <div class="input-group">

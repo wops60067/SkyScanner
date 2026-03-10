@@ -49,12 +49,29 @@ export class AppComponent implements OnInit, OnDestroy {
   loadResults() {
     this.watcherService.getResults().subscribe({
       next: (data) => {
+        console.log(`[Flight Tracker] ✈️ Successfully loaded ${data.length} deals from API.`);
+        if (data.length > 0) {
+          console.table(data); // Using table view for clearer inspection
+        }
         this.flightResults = data;
+        this.sortResults('price'); // Default sort by price
       },
       error: (err) => {
         console.error('Failed to load flight results', err);
       }
     });
+  }
+
+  sortResults(type: string) {
+    if (type === 'price') {
+      this.flightResults.sort((a, b) => a.price - b.price);
+    } else if (type === 'date') {
+      this.flightResults.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    } else if (type === 'route') {
+      this.flightResults.sort((a, b) => a.origin.localeCompare(b.origin));
+    } else if (type === 'airline') {
+      this.flightResults.sort((a, b) => a.airline.localeCompare(b.airline));
+    }
   }
 
   onDeleteWatcher(id: number) {

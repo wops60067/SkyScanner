@@ -24,6 +24,7 @@ export interface FlightResult {
   origin: string;
   destination: string;
   date: string;
+  airline: string;
   deepLink: string;
   createdAt: string;
 }
