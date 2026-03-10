@@ -40,15 +40,46 @@ async function processWatcher(watcher: any) {
     try {
         const flights = await searchFlights(watcher);
         if (flights && flights.length > 0) {
-            const bestFlight = flights[0]; // Assuming API returns cheapest first
-            console.log(`Found flight: ${bestFlight.cityFrom} -> ${bestFlight.cityTo} for ${bestFlight.price} ${bestFlight.currency}`);
+            // Filter flights that meet the target price
+            const matchingFlights = flights.filter(f => f.price <= watcher.targetPrice);
             
-            if (bestFlight.price <= watcher.targetPrice) {
-                console.log(`[ALERT] Price ${bestFlight.price} is <= your target ${watcher.targetPrice}! Triggering notifications...`);
-                await sendEmailNotification(watcher.emailUser, bestFlight);
-                await sendLineNotify(`Price Alert! Flight to ${bestFlight.cityTo} is now ${bestFlight.price} ${bestFlight.currency}. Link: ${bestFlight.deep_link}`);
+            // Update the "best" price for the display block
+            const bestFlight = flights[0]; 
+            await prisma.watcher.update({
+                where: { id: watcher.id },
+                data: {
+                    lastPrice: Math.round(bestFlight.price),
+                    lastCheckedAt: new Date()
+                }
+            });
+
+            // Save matching flights to results table
+            if (matchingFlights.length > 0) {
+                // Clear old results for this watcher to keep it clean (optional)
+                await prisma.flightResult.deleteMany({ where: { watcherId: watcher.id } });
+                
+                // Save new results
+                for (const f of matchingFlights) {
+                    await prisma.flightResult.create({
+                        data: {
+                            watcherId: watcher.id,
+                            price: Math.round(f.price),
+                            origin: f.cityFrom,
+                            destination: f.cityTo,
+                            date: watcher.date_from,
+                            deepLink: f.deep_link
+                        }
+                    });
+                }
+
+                console.log(`[ALERT] Found ${matchingFlights.length} matching flight(s) below target!`);
+                await sendEmailNotification(watcher.emailUser, matchingFlights, false); // Always treat as one-way now
+                
+                const best = matchingFlights[0];
+                const lineMsg = `Price Alert! Found ${matchingFlights.length} options for ${best.cityFrom}->${best.cityTo}. Cheapest: ${best.price} ${best.currency}.\nCheck here: ${best.deep_link}`;
+                await sendLineNotify(lineMsg);
             } else {
-                console.log(`[INFO] Price ${bestFlight.price} is > target ${watcher.targetPrice}. No alerting.`);
+                console.log(`[INFO] No flights found below target ${watcher.targetPrice} TWD (Cheapest was ${bestFlight.price}).`);
             }
             return bestFlight;
         }
@@ -58,36 +89,62 @@ async function processWatcher(watcher: any) {
     return null;
 }
 
-// API: Create a new watcher
+// API: Create new watcher(s)
 app.post('/api/watchers', async (req, res) => {
     try {
         const data = req.body;
-        const newWatcher = await prisma.watcher.create({
+        const createdWatchers = [];
+
+        // Create the Outbound watcher
+        const outbound = await prisma.watcher.create({
             data: {
                 fly_from: data.fly_from,
                 fly_to: data.fly_to,
                 date_from: data.date_from,
-                date_to: data.date_to,
                 curr: data.curr || 'TWD',
                 targetPrice: Number(data.targetPrice),
                 emailUser: data.emailUser
             }
         });
+        createdWatchers.push(outbound);
+        await processWatcher(outbound);
+
+        // If date_to is provided, create the Inbound watcher separately
+        if (data.date_to) {
+            const inbound = await prisma.watcher.create({
+                data: {
+                    fly_from: data.fly_to, // Swapped
+                    fly_to: data.fly_from,   // Swapped
+                    date_from: data.date_to, // Return date becomes the new date_from
+                    curr: data.curr || 'TWD',
+                    targetPrice: Number(data.targetPrice),
+                    emailUser: data.emailUser
+                }
+            });
+            createdWatchers.push(inbound);
+            await processWatcher(inbound);
+        }
         
-        // Trigger immediate check and wait for it so we can return the result to frontend
-        console.log(`[New Watcher] Created watcher ${newWatcher.id}. Triggering immediate price check...`);
-        const initialResult = await processWatcher(newWatcher); 
-        
-        res.status(201).json({
-            ...newWatcher,
-            initialCheck: initialResult
-        });
+        res.status(201).json(createdWatchers);
     } catch (error) {
         console.error('Error creating watcher:', error);
         res.status(500).json({ error: 'Failed to create watcher' });
     }
 });
 
+// API: Get all flight results (deals found)
+app.get('/api/results', async (req, res) => {
+    try {
+        const results = await prisma.flightResult.findMany({
+            orderBy: { createdAt: 'desc' },
+            take: 50
+        });
+        res.json(results);
+    } catch (error) {
+        console.error('Error fetching results:', error);
+        res.status(500).json({ error: 'Failed to fetch results' });
+    }
+});
 // API: Delete a watcher
 app.delete('/api/watchers/:id', async (req, res) => {
     try {

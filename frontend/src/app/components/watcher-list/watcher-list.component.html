@@ -26,6 +26,16 @@
           <span class="label">Target Alert:</span>
           <span class="value price">{{ watcher.targetPrice | number }} {{ watcher.curr }}</span>
         </div>
+        <div class="info-row status-row" *ngIf="watcher.lastPrice">
+          <span class="label">Current Best:</span>
+          <span class="value current-price" [class.success]="watcher.lastPrice <= watcher.targetPrice">
+            {{ watcher.lastPrice | number }} {{ watcher.curr }}
+          </span>
+        </div>
+        <div class="info-row" *ngIf="watcher.lastCheckedAt">
+          <span class="label">Last Check:</span>
+          <span class="value text-xs">{{ watcher.lastCheckedAt | date:'short' }}</span>
+        </div>
         <div class="info-row">
           <span class="label">Notify:</span>
           <span class="value">{{ watcher.emailUser }}</span>

@@ -11,8 +11,21 @@ export interface Watcher {
   curr?: string;
   targetPrice: number;
   emailUser: string;
+  lastPrice?: number;
+  lastCheckedAt?: string;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface FlightResult {
+  id: number;
+  watcherId: number;
+  price: number;
+  origin: string;
+  destination: string;
+  date: string;
+  deepLink: string;
+  createdAt: string;
 }
 
 @Injectable({
@@ -33,5 +46,9 @@ export class WatcherService {
 
   deleteWatcher(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+  getResults(): Observable<FlightResult[]> {
+    return this.http.get<FlightResult[]>(`http://localhost:3000/api/results`);
   }
 }

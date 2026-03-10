@@ -52,3 +52,77 @@ h1 {
   border-top: 1px solid var(--border-color);
   font-size: 0.875rem;
 }
+
+.results-container {
+  margin-top: 4rem;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.results-header {
+  margin-bottom: 2rem;
+}
+
+.results-header h2 {
+  font-size: 2rem;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.results-header p {
+  color: var(--text-muted);
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.result-card {
+  padding: 1.5rem;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  background: rgba(34, 197, 94, 0.05);
+}
+
+.result-route {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.result-route .arrow {
+  color: var(--success);
+}
+
+.result-details {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.detail {
+  display: flex;
+  justify-content: space-between;
+}
+
+.detail .label {
+  color: var(--text-muted);
+}
+
+.detail .price {
+  color: var(--success);
+  font-weight: 700;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

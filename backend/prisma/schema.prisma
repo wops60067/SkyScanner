@@ -15,10 +15,23 @@ model Watcher {
   fly_from    String
   fly_to      String
   date_from   String
-  date_to     String
+  date_to     String?
   curr        String   @default("TWD")
   targetPrice Int
-  emailUser   String
+  emailUser      String
+  lastPrice     Int?
+  lastCheckedAt DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model FlightResult {
+  id          Int      @id @default(autoincrement())
+  watcherId   Int
+  price       Int
+  origin      String
+  destination String
+  date        String
+  deepLink    String
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 }
